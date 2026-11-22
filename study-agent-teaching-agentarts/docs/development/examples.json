@@ -1,0 +1,1491 @@
+{
+  "schema_version": "1.0",
+  "fixture_note": "合成联调数据。时间为固定测试时钟，内部题组和参考解仅用于开发种子。",
+  "feedback_case": {
+    "submitted": {
+      "id": "rec_ttl_expression", "graph_id": "g_network", "node_id": "node_b", "revision": 1,
+      "kind": "explanation", "created_at": "2026-11-22T02:00:00Z",
+      "body_md": "TTL 从权威数据更新的时刻开始算。权威地址改了之后，递归解析器一定会拿到新地址。",
+      "refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"缓存与 TTL"}}]
+    },
+    "teacher_output": {
+      "reply_md": "先画出权威数据更新和解析器取得旧记录各自发生的时刻。",
+      "used_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"缓存与 TTL"}}],
+      "feedback": [
+        {
+          "target_record_ref": {"kind":"record","id":"rec_ttl_expression","revision":1},
+          "category": "error", "severity": "high",
+          "anchor_quote": "TTL 从权威数据更新的时刻开始算",
+          "hint_md": "用课文例子中解析器取得旧记录的时刻画起点。",
+          "explanation_md": "本例缓存于 10:00:00 建立，原记录的到期时刻是 10:02:00。",
+          "refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"缓存与 TTL"}}]
+        },
+        {
+          "target_record_ref": {"kind":"record","id":"rec_ttl_expression","revision":1},
+          "category": "misunderstanding", "severity": "medium",
+          "anchor_quote": "递归解析器一定会拿到新地址",
+          "hint_md": "把权威数据变更和递归缓存刷新视为两个事件。",
+          "refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"DNS 查询和记录"}}]
+        }
+      ],
+      "evidence": [],
+      "suggestions": []
+    },
+    "revised_after_hint": {
+      "id": "rec_ttl_expression", "graph_id": "g_network", "node_id": "node_b", "revision": 2,
+      "kind": "explanation", "created_at": "2026-11-22T02:01:00Z",
+      "body_md": "TTL 从解析器取得旧记录的时刻算。权威地址虽然更新了，解析器仍可能使用到期前的旧缓存。",
+      "refs": [{"kind":"record","id":"rec_ttl_expression","revision":1}]
+    },
+    "independent_attempt": {
+      "id": "rec_ttl_independent", "graph_id": "g_network", "node_id": "node_b", "revision": 1,
+      "kind": "exercise", "created_at": "2026-11-22T02:02:00Z",
+      "body_md": "12:01:30 才到期。12:01:00 查询时如果解析器使用旧缓存，权威数据已经更新也仍可能拿到旧地址。",
+      "refs": [{"kind":"node","id":"node_b","revision":1,"locator":{"activity_id":"act_ttl"}}]
+    },
+    "evidence": {
+      "id": "ev_ttl_sources", "target_node_ref": {"kind":"node","id":"node_b","revision":1},
+      "objective_id": "obj_ttl_sources", "record_ref": {"kind":"record","id":"rec_ttl_independent","revision":1},
+      "independence": "unaided", "demonstrated": "解释给定查询时间的答案来源",
+      "assessment_md": "能独立算出到期时刻，并指出递归解析器使用可用旧缓存的条件。"
+    }
+  },
+  "keeper_case": {
+    "prior_graph": {"id":"g_math","mode":"goal","title":"离散数学中的区间","goal":"用区间表示一组数或时刻。","status":"sparse"},
+    "prior_node": {
+      "id": "node_interval", "graph_id": "g_math", "revision": 1, "kind": "predicted",
+      "title": "半开区间", "objectives": [{"id":"obj_half_open","text":"判断一个数是否属于给定的半开区间。"}],
+      "reading": null, "activities": [], "source_refs": []
+    },
+    "prior_record": {
+      "id": "rec_interval_note", "graph_id": "g_math", "node_id": "node_interval", "revision": 1,
+      "kind": "note", "created_at": "2026-11-21T06:00:00Z", "refs": [],
+      "body_md": "半开区间 [a,b) 含左端点，不含右端点。数轴有助于看出边界值属于哪一边。"
+    },
+    "related": {
+      "id": "suggestion_interval", "status": "suggested", "relation_kind": "analogy",
+      "target_node_ref": {"kind":"node","id":"node_b","revision":1},
+      "source_ref": {"kind":"record","id":"rec_interval_note","revision":1},
+      "reason_md": "可以把本例缓存有效期画成一段半开区间，便于看出恰好到期时的边界。"
+    },
+    "incorrect_variant": {
+      "id": "suggestion_wrong_interval", "status": "retracted", "relation_kind": "prerequisite",
+      "target_node_ref": {"kind":"node","id":"node_b","revision":1},
+      "source_ref": {"kind":"record","id":"rec_interval_note","revision":1},
+      "reason_md": "学习 TTL 必须先完成区间表示。", "correction_md": "半开区间只是画时间线时可用的类比。本例可直接按取得时刻和 TTL 计算。"
+    }
+  },
+  "sources": [
+    {
+      "id": "src_mini_book",
+      "revision": 1,
+      "media_type": "text/markdown",
+      "title": "一次网页访问中的查询和请求",
+      "example_file": "fixtures/network-mini-textbook.md",
+      "sections": [
+        {"title":"DNS 查询和记录","excerpt_md":"客户端向递归解析器请求地址记录。解析器可以从可用缓存或其他 DNS 服务器取得结果，权威服务器提供区域数据。"},
+        {"title":"缓存与 TTL","excerpt_md":"简化例子中到期时刻等于取得时刻加当时的 TTL。解析器 10:00:00 取得旧地址，TTL 为 120 秒；权威数据 10:00:30 更新。"},
+        {"title":"HTTP 请求与响应","excerpt_md":"已能发送消息时，客户端请求资源，服务器处理后响应。GET /index.html 是请求，200 是响应状态。"}
+      ]
+    },
+    {
+      "id": "src_rfc1035",
+      "revision": 1,
+      "media_type": "text/html",
+      "title": "RFC 1035 — Domain Names: Implementation and Specification",
+      "url": "https://www.rfc-editor.org/rfc/rfc1035.html",
+      "accessed_at": "2026-11-22T02:00:00Z",
+      "sections": [
+        {"title":"§2.1 Overview","excerpt_md":"该节介绍由域名空间、名称服务器和解析器组成的 DNS。解析器从名称服务器获取信息，并处理客户端的请求。"},
+        {"title":"§3.2.1 Format","excerpt_md":"资源记录的 TTL 字段用秒表示记录可以缓存的时长。"}
+      ]
+    },
+    {
+      "id": "src_rfc9110",
+      "revision": 1,
+      "media_type": "text/html",
+      "title": "RFC 9110 — HTTP Semantics",
+      "url": "https://www.rfc-editor.org/rfc/rfc9110.html#section-3.4",
+      "accessed_at": "2026-11-22T02:00:00Z",
+      "sections": [{"title":"§3.4 Messages","excerpt_md":"HTTP 客户端发送请求，服务器用一个或多个响应传达处理结果，消息包含用于表达语义的控制数据。"}]
+    }
+  ],
+  "textbook_flow": {
+    "graph": {
+      "id": "g_network",
+      "mode": "textbook",
+      "title": "计算机网络示例",
+      "goal": "根据一份网页访问日志，说明域名查询和 HTTP 请求分别在做什么，并判断缓存何时到期。",
+      "status": "ready"
+    },
+    "nodes": [
+      {
+        "id": "node_a",
+        "graph_id": "g_network",
+        "revision": 1,
+        "kind": "mainline",
+        "title": "DNS 查询",
+        "objectives": [{"id":"obj_roles","text":"能用一条地址查询说明递归解析器与权威服务器各自提供什么。"}],
+        "reading": {
+          "intro_md": "用一次域名更新认识查询角色。",
+          "steps": ["先读例子，再画出客户端、递归解析器与权威服务器三者。"],
+          "key_points": ["区分权威数据与递归解析器的作答。"],
+          "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"DNS 查询和记录"}}]
+        },
+        "activities": [
+          {
+            "id": "act_dns",
+            "kind": "checkpoint",
+            "objective_ids": ["obj_roles"],
+            "prompt_md": "一个客户端询问域名对应地址。递归解析器和权威服务器分别做什么？",
+            "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"DNS 查询和记录"}}],
+            "solution_md": "递归解析器向客户端提供查询结果，可用缓存或继续查询。权威服务器对相应区域的数据负责。"
+          }
+        ],
+        "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"DNS 查询和记录"}}]
+      },
+      {
+        "id": "node_b",
+        "graph_id": "g_network",
+        "revision": 1,
+        "kind": "mainline",
+        "title": "缓存与 TTL",
+        "objectives": [{"id":"obj_ttl_sources","text":"能结合 TTL 剩余时间和答案来源，说明为什么更新后一次查询仍可能得到旧地址。"}],
+        "reading": {
+          "intro_md": "用到期时刻解释一次旧答案。",
+          "steps": ["读 10:00:00 的例子，画三时刻时间线。"],
+          "key_points": ["按记录取得时刻计算到期，再判断可能的答案来源。"],
+          "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"缓存与 TTL"}}]
+        },
+        "activities": [
+          {
+            "id": "act_ttl",
+            "kind": "checkpoint",
+            "objective_ids": ["obj_ttl_sources"],
+            "prompt_md": "12:00:00 缓存旧记录，TTL 90 秒，权威记录 12:00:45 更新。12:01:00 仍可能收到旧地址吗？为什么？",
+            "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"缓存与 TTL"}}],
+            "solution_md": "12:01:30 到期。12:01:00 缓存仍有效，递归解析器可能用旧缓存回答。"
+          }
+        ],
+        "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"缓存与 TTL"}}]
+      },
+      {
+        "id": "node_c",
+        "graph_id": "g_network",
+        "revision": 1,
+        "kind": "mainline",
+        "title": "HTTP 消息",
+        "objectives": [{"id":"obj_http","text":"能在给定访问日志中辨认 HTTP 请求行和响应状态。"}],
+        "reading": {
+          "intro_md": "从两条日志辨认 HTTP 请求与响应。",
+          "steps": ["读 GET 与 200 的例子，对照它们各自经过的方向。"],
+          "key_points": ["GET 示意请求，200 属于响应状态。"],
+          "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"HTTP 请求与响应"}}]
+        },
+        "activities": [
+          {
+            "id": "act_msg",
+            "kind": "checkpoint",
+            "objective_ids": ["obj_http"],
+            "prompt_md": "日志出现 GET /notes 和 200，分别表示哪一侧发送了什么？",
+            "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"HTTP 请求与响应"}}],
+            "solution_md": "客户端请求 /notes 的表示；服务端给出成功响应状态 200。"
+          }
+        ],
+        "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"HTTP 请求与响应"}}]
+      },
+      {
+        "id": "node_s",
+        "graph_id": "g_network",
+        "revision": 1,
+        "kind": "branch",
+        "title": "为什么更新后仍有旧地址",
+        "objectives": [{"id":"obj_ttl_sources","text":"能结合 TTL 剩余时间和答案来源，说明为什么更新后一次查询仍可能得到旧地址。"}],
+        "reading": null,
+        "activities": [],
+        "source_refs": []
+      },
+      {
+        "id": "node_e",
+        "graph_id": "g_network",
+        "revision": 1,
+        "kind": "exam",
+        "title": "DNS 与缓存短测",
+        "objectives": [{"id":"obj_ttl_sources","text":"能结合 TTL 剩余时间和答案来源，说明为什么更新后一次查询仍可能得到旧地址。"}],
+        "reading": null,
+        "activities": [],
+        "source_refs": []
+      }
+    ],
+    "routes": [
+      {
+        "id": "route_net_full",
+        "revision": 1,
+        "graph_id": "g_network",
+        "kind": "full",
+        "title": "短教材全书",
+        "node_ids": ["node_a","node_b","node_c","node_e"],
+        "counted_node_ids": ["node_a","node_b","node_c"],
+        "edges": [
+          {
+            "kind": "prerequisite",
+            "from_node_id": "node_a",
+            "to_node_id": "node_b",
+            "target_objective_id": "obj_ttl_sources",
+            "reason_md": "解释旧答案来源需要区分权威数据与递归解析器缓存。"
+          }
+        ]
+      },
+      {
+        "id": "route_net_core",
+        "revision": 1,
+        "graph_id": "g_network",
+        "kind": "core",
+        "title": "查询与请求核心",
+        "node_ids": ["node_a","node_c"],
+        "counted_node_ids": ["node_a","node_c"],
+        "edges": []
+      }
+    ],
+    "branch": {
+      "id": "node_s",
+      "graph_id": "g_network",
+      "revision": 1,
+      "kind": "branch",
+      "title": "为什么更新后仍有旧地址",
+      "objectives": [{"id":"obj_ttl_sources","text":"能结合 TTL 剩余时间和答案来源，说明为什么更新后一次查询仍可能得到旧地址。"}],
+      "reading": null,
+      "activities": [],
+      "source_refs": [],
+      "origin_node_ref": {"kind":"node","id":"node_a","revision":1},
+      "origin_refs": [{"kind":"record","id":"rec_ask_from_a","revision":1}],
+      "origin_checkpoint": {"section_id":"example_update","record_ref":{"kind":"record","id":"rec_ask_from_a","revision":1}}
+    },
+    "initial_focus": {
+      "graph_id": "g_network",
+      "node_id": "node_a",
+      "revision": 1,
+      "checkpoint": {"section_id":"example_update"},
+      "lock": null
+    },
+    "records": [
+      {
+        "id": "rec_ask_from_a",
+        "graph_id": "g_network",
+        "node_id": "node_a",
+        "revision": 1,
+        "kind": "question",
+        "body_md": "权威地址已更新，为什么同一个递归解析器还可能回旧地址？我想对照 B 的 TTL 例子。",
+        "refs": [
+          {"kind":"node","id":"node_b","revision":1},
+          {"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"缓存与 TTL"}}
+        ],
+        "created_at": "2026-11-22T02:00:00Z"
+      },
+      {
+        "id": "rec_s_note",
+        "graph_id": "g_network",
+        "node_id": "node_s",
+        "revision": 1,
+        "kind": "explanation",
+        "body_md": "解析器 10:00:00 取得旧地址，TTL 为 120 秒，10:02:00 才到期。10:01:00 的查询到达时，缓存里的旧记录还有效。",
+        "refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"缓存与 TTL"}}],
+        "created_at": "2026-11-22T02:00:00Z"
+      },
+      {
+        "id": "rec_resume",
+        "graph_id": "g_network",
+        "node_id": "node_a",
+        "revision": 1,
+        "kind": "answer",
+        "body_md": "你算出 10:01:00 时缓存仍有效，因此即使权威数据已经变更，解析器也可能继续用旧缓存作答。",
+        "refs": [{"kind":"record","id":"rec_ask_from_a","revision":1},{"kind":"record","id":"rec_s_note","revision":1}],
+        "created_at": "2026-11-22T02:00:00Z"
+      }
+    ],
+    "api": [
+      {
+        "method": "GET",
+        "path": "/api/v1/workspace?graph_id=g_network&node_id=node_b",
+        "expected_status": 200,
+        "response": {
+          "data": {
+            "focus": {
+              "graph_id": "g_network",
+              "node_id": "node_a",
+              "revision": 1,
+              "checkpoint": {"section_id":"example_update"},
+              "lock": null
+            },
+            "graphs": [
+              {
+                "id": "g_network",
+                "mode": "textbook",
+                "title": "计算机网络示例",
+                "goal": "根据一份网页访问日志，说明域名查询和 HTTP 请求分别在做什么，并判断缓存何时到期。",
+                "status": "ready"
+              }
+            ],
+            "graph": {
+              "id": "g_network",
+              "mode": "textbook",
+              "title": "计算机网络示例",
+              "goal": "根据一份网页访问日志，说明域名查询和 HTTP 请求分别在做什么，并判断缓存何时到期。",
+              "status": "ready"
+            },
+            "node": {
+              "id": "node_b",
+              "graph_id": "g_network",
+              "revision": 1,
+              "kind": "mainline",
+              "title": "缓存与 TTL",
+              "objectives": [{"id":"obj_ttl_sources","text":"能结合 TTL 剩余时间和答案来源，说明为什么更新后一次查询仍可能得到旧地址。"}],
+              "reading": {
+                "intro_md": "用到期时刻解释一次旧答案。",
+                "steps": ["读 10:00:00 的例子，画三时刻时间线。"],
+                "key_points": ["按记录取得时刻计算到期，再判断可能的答案来源。"],
+                "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"缓存与 TTL"}}]
+              },
+              "activities": [
+                {
+                  "id": "act_ttl",
+                  "kind": "checkpoint",
+                  "objective_ids": ["obj_ttl_sources"],
+                  "prompt_md": "12:00:00 缓存旧记录，TTL 90 秒，权威记录 12:00:45 更新。12:01:00 仍可能收到旧地址吗？为什么？",
+                  "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"缓存与 TTL"}}]
+                }
+              ],
+              "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"缓存与 TTL"}}]
+            },
+            "routes": [
+              {
+                "id": "route_net_full",
+                "revision": 1,
+                "graph_id": "g_network",
+                "kind": "full",
+                "title": "短教材全书",
+                "node_ids": ["node_a","node_b","node_c","node_e"],
+                "counted_node_ids": ["node_a","node_b","node_c"],
+                "edges": [
+                  {
+                    "kind": "prerequisite",
+                    "from_node_id": "node_a",
+                    "to_node_id": "node_b",
+                    "target_objective_id": "obj_ttl_sources",
+                    "reason_md": "解释旧答案来源需要区分权威数据与递归解析器缓存。"
+                  }
+                ]
+              },
+              {
+                "id": "route_net_core",
+                "revision": 1,
+                "graph_id": "g_network",
+                "kind": "core",
+                "title": "查询与请求核心",
+                "node_ids": ["node_a","node_c"],
+                "counted_node_ids": ["node_a","node_c"],
+                "edges": []
+              }
+            ],
+            "jobs": [],
+            "candidates": [],
+            "milestones": [],
+            "completions": [],
+            "route_progress": [
+              {"route_id":"route_net_full","completed_count":0,"counted_count":3},
+              {"route_id":"route_net_core","completed_count":0,"counted_count":2}
+            ]
+          }
+        }
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/teacher/messages",
+        "expected_status": 202,
+        "response": {"data":{"record_ref":{"kind":"record","id":"rec_ask_from_a","revision":1},"job_id":"job_answer_01"}},
+        "body": {
+          "message_md": "权威地址已更新，为什么同一个递归解析器还可能回旧地址？我想对照 B 的 TTL 例子。",
+          "expected_focus_revision": 1,
+          "refs": [
+            {"kind":"node","id":"node_b","revision":1},
+            {"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"缓存与 TTL"}}
+          ],
+          "intent": "ask"
+        },
+        "headers": {"Idempotency-Key":"ask-01"}
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/branches",
+        "expected_status": 201,
+        "response": {
+          "data": {
+            "branch": {
+              "id": "node_s",
+              "graph_id": "g_network",
+              "revision": 1,
+              "kind": "branch",
+              "title": "为什么更新后仍有旧地址",
+              "objectives": [{"id":"obj_ttl_sources","text":"能结合 TTL 剩余时间和答案来源，说明为什么更新后一次查询仍可能得到旧地址。"}],
+              "reading": null,
+              "activities": [],
+              "source_refs": [],
+              "origin_node_ref": {"kind":"node","id":"node_a","revision":1},
+              "origin_refs": [{"kind":"record","id":"rec_ask_from_a","revision":1}],
+              "origin_checkpoint": {"section_id":"example_update","record_ref":{"kind":"record","id":"rec_ask_from_a","revision":1}}
+            },
+            "focus": {"graph_id":"g_network","node_id":"node_s","revision":2,"checkpoint":{"section_id":"start"},"lock":null}
+          }
+        },
+        "body": {
+          "expected_focus_revision": 1,
+          "title": "为什么更新后仍有旧地址",
+          "question_md": "权威地址已更新，为什么同一个递归解析器还可能回旧地址？我想对照 B 的 TTL 例子。",
+          "origin_refs": [{"kind":"record","id":"rec_ask_from_a","revision":1}],
+          "checkpoint": {"section_id":"example_update","record_ref":{"kind":"record","id":"rec_ask_from_a","revision":1}}
+        },
+        "headers": {"Idempotency-Key":"branch-01"}
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/nodes/node_s/records",
+        "expected_status": 201,
+        "response": {"data":{"record_ref":{"kind":"record","id":"rec_s_note","revision":1},"job_id":"job_check_01"}},
+        "body": {
+          "kind": "explanation",
+          "body_md": "解析器 10:00:00 取得旧地址，TTL 为 120 秒，10:02:00 才到期。10:01:00 的查询到达时，缓存里的旧记录还有效。",
+          "refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"缓存与 TTL"}}],
+          "action": "finish_expression",
+          "expected_focus_revision": 2
+        },
+        "headers": {"Idempotency-Key":"note-s-01"}
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/branches/node_s/return",
+        "expected_status": 202,
+        "response": {
+          "data": {
+            "focus": {
+              "graph_id": "g_network",
+              "node_id": "node_a",
+              "revision": 3,
+              "checkpoint": {"section_id":"example_update","record_ref":{"kind":"record","id":"rec_ask_from_a","revision":1}},
+              "lock": null
+            },
+            "return_event_id": "ret_01",
+            "job_id": "job_resume_01"
+          }
+        },
+        "body": {"expected_focus_revision":2},
+        "headers": {"Idempotency-Key":"return-01"}
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/jobs/job_resume_01",
+        "expected_status": 200,
+        "response": {
+          "data": {
+            "id": "job_resume_01",
+            "kind": "resume_branch",
+            "status": "succeeded",
+            "stage": "finish",
+            "result": {
+              "record_ref": {"kind":"record","id":"rec_resume","revision":1},
+              "used_refs": [{"kind":"record","id":"rec_s_note","revision":1}]
+            },
+            "updated_at": "2026-11-22T02:00:00Z"
+          }
+        }
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/refs?kind=record&id=rec_s_note&revision=1",
+        "expected_status": 200,
+        "response": {
+          "data": {
+            "id": "rec_s_note",
+            "graph_id": "g_network",
+            "node_id": "node_s",
+            "revision": 1,
+            "kind": "explanation",
+            "body_md": "解析器 10:00:00 取得旧地址，TTL 为 120 秒，10:02:00 才到期。10:01:00 的查询到达时，缓存里的旧记录还有效。",
+            "refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"缓存与 TTL"}}],
+            "created_at": "2026-11-22T02:00:00Z"
+          }
+        }
+      }
+    ]
+  },
+  "goal_flow": {
+    "graph": {
+      "id": "g_web_goal",
+      "mode": "goal",
+      "title": "看懂网页访问日志",
+      "goal": "根据一份网页访问日志，说明域名查询和 HTTP 请求分别在做什么，并判断缓存何时到期。",
+      "status": "sparse"
+    },
+    "goal_intake": {"intent":"goal","source_refs":[]},
+    "milestone": {
+      "id": "mil_access_1",
+      "graph_id": "g_web_goal",
+      "revision": 1,
+      "outcome": "给定一条访问记录，圈出域名查询和 HTTP 请求，并算出示例缓存的到期时刻。",
+      "status": "active",
+      "evidence_refs": []
+    },
+    "candidates": [
+      {
+        "id": "cand_dns",
+        "graph_id": "g_web_goal",
+        "based_on_refs": [{"kind":"source","id":"src_rfc1035","revision":1,"locator":{"section":"§2.1 Overview"}}],
+        "preparation": {
+          "title": "DNS 查询",
+          "objectives": [{"id":"obj_roles","text":"能用一条地址查询说明递归解析器与权威服务器各自提供什么。"}],
+          "reading": {
+            "intro_md": "先认识查询中的两个角色。",
+            "steps": ["读 RFC 的概览和配套简述，再用一条查询画角色。"],
+            "key_points": ["解析器可以查询或用已有结果，权威服务器提供其区域数据。"],
+            "source_refs": [{"kind":"source","id":"src_rfc1035","revision":1,"locator":{"section":"§2.1 Overview"}}]
+          },
+          "activities": [
+            {
+              "id": "act_dns",
+              "kind": "checkpoint",
+              "objective_ids": ["obj_roles"],
+              "prompt_md": "一个客户端询问域名对应地址。递归解析器和权威服务器分别做什么？",
+              "source_refs": [{"kind":"source","id":"src_rfc1035","revision":1,"locator":{"section":"§2.1 Overview"}}],
+              "solution_md": "递归解析器向客户端提供查询结果，可用缓存或继续查询。权威服务器对相应区域的数据负责。"
+            }
+          ]
+        },
+        "reason_md": "弄清答案从哪里来，后面能判断缓存和更新。",
+        "source_refs": [{"kind":"source","id":"src_rfc1035","revision":1,"locator":{"section":"§2.1 Overview"}}],
+        "recommended": true,
+        "status": "proposed"
+      },
+      {
+        "id": "cand_ttl",
+        "graph_id": "g_web_goal",
+        "parent_candidate_id": "cand_dns",
+        "based_on_refs": [{"kind":"source","id":"src_rfc1035","revision":1,"locator":{"section":"§3.2.1 Format"}}],
+        "preparation": {
+          "title": "计算缓存的到期时刻",
+          "objectives": [{"id":"obj_ttl_time","text":"能根据取得时间和 TTL 算出示例缓存的到期时刻。"}],
+          "reading": {
+            "intro_md": "把 TTL 放到简单时间线。",
+            "steps": ["读 TTL 字段说明，把取得时刻加上持续秒数。"],
+            "key_points": ["TTL 的单位为秒。"],
+            "source_refs": [{"kind":"source","id":"src_rfc1035","revision":1,"locator":{"section":"§3.2.1 Format"}}]
+          },
+          "activities": [
+            {
+              "id": "act_ttl_time",
+              "kind": "checkpoint",
+              "objective_ids": ["obj_ttl_time"],
+              "prompt_md": "取得时刻为 10:00:00，TTL 120 秒，什么时候到期？",
+              "source_refs": [{"kind":"source","id":"src_rfc1035","revision":1,"locator":{"section":"§3.2.1 Format"}}],
+              "solution_md": "10:02:00。"
+            }
+          ]
+        },
+        "reason_md": "先读懂一条记录的时间范围，再解释回答来源。",
+        "source_refs": [{"kind":"source","id":"src_rfc1035","revision":1,"locator":{"section":"§3.2.1 Format"}}],
+        "recommended": false,
+        "status": "proposed"
+      },
+      {
+        "id": "cand_http",
+        "graph_id": "g_web_goal",
+        "based_on_refs": [{"kind":"source","id":"src_rfc9110","revision":1,"locator":{"section":"§3.4 Messages"}}],
+        "preparation": {
+          "title": "HTTP 消息",
+          "objectives": [{"id":"obj_http","text":"能在给定访问日志中辨认 HTTP 请求行和响应状态。"}],
+          "reading": {
+            "intro_md": "认出日志中的 HTTP 部分。",
+            "steps": ["读消息定义，标出请求和响应。"],
+            "key_points": ["HTTP 请求与响应对应客户端和服务端。"],
+            "source_refs": [{"kind":"source","id":"src_rfc9110","revision":1,"locator":{"section":"§3.4 Messages"}}]
+          },
+          "activities": [
+            {
+              "id": "act_msg",
+              "kind": "checkpoint",
+              "objective_ids": ["obj_http"],
+              "prompt_md": "日志出现 GET /notes 和 200，分别表示哪一侧发送了什么？",
+              "source_refs": [{"kind":"source","id":"src_rfc9110","revision":1,"locator":{"section":"§3.4 Messages"}}],
+              "solution_md": "客户端请求 /notes 的表示；服务端给出成功响应状态 200。"
+            }
+          ]
+        },
+        "reason_md": "认识域名查询之外的另一条日志。",
+        "source_refs": [{"kind":"source","id":"src_rfc9110","revision":1,"locator":{"section":"§3.4 Messages"}}],
+        "recommended": false,
+        "status": "proposed"
+      }
+    ],
+    "adopted_nodes": [
+      {
+        "id": "node_goal_dns",
+        "graph_id": "g_web_goal",
+        "revision": 1,
+        "kind": "predicted",
+        "title": "DNS 查询",
+        "objectives": [{"id":"obj_roles","text":"能用一条地址查询说明递归解析器与权威服务器各自提供什么。"}],
+        "reading": {
+          "intro_md": "先认识查询中的两个角色。",
+          "steps": ["读 RFC 的概览和配套简述，再用一条查询画角色。"],
+          "key_points": ["解析器可以查询或用已有结果，权威服务器提供其区域数据。"],
+          "source_refs": [{"kind":"source","id":"src_rfc1035","revision":1,"locator":{"section":"§2.1 Overview"}}]
+        },
+        "activities": [
+          {
+            "id": "act_dns",
+            "kind": "checkpoint",
+            "objective_ids": ["obj_roles"],
+            "prompt_md": "一个客户端询问域名对应地址。递归解析器和权威服务器分别做什么？",
+            "source_refs": [{"kind":"source","id":"src_rfc1035","revision":1,"locator":{"section":"§2.1 Overview"}}],
+            "solution_md": "递归解析器向客户端提供查询结果，可用缓存或继续查询。权威服务器对相应区域的数据负责。"
+          }
+        ],
+        "source_refs": [{"kind":"source","id":"src_rfc1035","revision":1,"locator":{"section":"§2.1 Overview"}}]
+      },
+      {
+        "id": "node_goal_ttl",
+        "graph_id": "g_web_goal",
+        "revision": 1,
+        "kind": "predicted",
+        "title": "计算缓存的到期时刻",
+        "objectives": [{"id":"obj_ttl_time","text":"能根据取得时间和 TTL 算出示例缓存的到期时刻。"}],
+        "reading": {
+          "intro_md": "把 TTL 放到简单时间线。",
+          "steps": ["读 TTL 字段说明，把取得时刻加上持续秒数。"],
+          "key_points": ["TTL 的单位为秒。"],
+          "source_refs": [{"kind":"source","id":"src_rfc1035","revision":1,"locator":{"section":"§3.2.1 Format"}}]
+        },
+        "activities": [
+          {
+            "id": "act_ttl_time",
+            "kind": "checkpoint",
+            "objective_ids": ["obj_ttl_time"],
+            "prompt_md": "取得时刻为 10:00:00，TTL 120 秒，什么时候到期？",
+            "source_refs": [{"kind":"source","id":"src_rfc1035","revision":1,"locator":{"section":"§3.2.1 Format"}}],
+            "solution_md": "10:02:00。"
+          }
+        ],
+        "source_refs": [{"kind":"source","id":"src_rfc1035","revision":1,"locator":{"section":"§3.2.1 Format"}}]
+      }
+    ],
+    "sample_records": [
+      {
+        "id": "rec_goal_dns",
+        "graph_id": "g_web_goal",
+        "node_id": "node_goal_dns",
+        "revision": 1,
+        "kind": "explanation",
+        "body_md": "客户端问递归解析器。解析器可用已有缓存或继续查询，权威服务器提供那个区域的数据。",
+        "refs": [{"kind":"source","id":"src_rfc1035","revision":1,"locator":{"section":"§2.1 Overview"}}],
+        "created_at": "2026-11-22T02:00:00Z"
+      },
+      {
+        "id": "rec_goal_ttl",
+        "graph_id": "g_web_goal",
+        "node_id": "node_goal_ttl",
+        "revision": 1,
+        "kind": "exercise",
+        "body_md": "10:00:00 取得的结果，TTL 是 120 秒，所以 10:02:00 到期。",
+        "refs": [{"kind":"source","id":"src_rfc1035","revision":1,"locator":{"section":"§3.2.1 Format"}}],
+        "created_at": "2026-11-22T02:00:00Z"
+      }
+    ],
+    "completion_after_learning": {"node_id":"node_goal_dns","marked_at":"2026-11-22T02:00:00Z"},
+    "evidence": {
+      "id": "evidence_dns_roles",
+      "target_node_ref": {"kind":"node","id":"node_goal_dns","revision":1},
+      "objective_id": "obj_roles",
+      "record_ref": {"kind":"record","id":"rec_goal_dns","revision":1},
+      "independence": "unaided",
+      "demonstrated": "区分递归解析器与权威服务器的职责",
+      "assessment_md": "能在一次地址查询里独立说明两个角色。可用新问题进一步检查答案来源判断。"
+    },
+    "merge": {
+      "request": {
+        "record_refs": [{"kind":"record","id":"rec_goal_dns","revision":1},{"kind":"record","id":"rec_goal_ttl","revision":1}],
+        "new_title": "网页访问中的查询和缓存"
+      },
+      "summary": {
+        "id": "rec_goal_summary",
+        "graph_id": "g_web_goal",
+        "node_id": "node_goal_summary",
+        "revision": 1,
+        "kind": "merge_summary",
+        "body_md": "地址查询要区分递归和权威。看到 TTL 可以先计算这条缓存到什么时候失效。",
+        "refs": [{"kind":"record","id":"rec_goal_dns","revision":1},{"kind":"record","id":"rec_goal_ttl","revision":1}],
+        "created_at": "2026-11-22T02:00:00Z"
+      }
+    },
+    "add_textbook": {
+      "request": {
+        "schema_version": "1.0",
+        "workflow": "textbook_plan",
+        "request_id": "req_plan_add_book",
+        "input": {
+          "goal": "根据一份网页访问日志，说明域名查询和 HTTP 请求分别在做什么，并判断缓存何时到期。",
+          "intent": "add_textbook",
+          "scope": {"kind":"all","section_ids":["sec_1","sec_2","sec_3"]},
+          "sections": [
+            {
+              "section_id": "sec_1",
+              "title": "DNS 查询和记录",
+              "source_ref": {"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"DNS 查询和记录"}},
+              "text_md": "客户端向递归解析器请求地址记录。解析器可以从可用缓存或其他 DNS 服务器取得结果，权威服务器提供区域数据。"
+            },
+            {
+              "section_id": "sec_2",
+              "title": "缓存与 TTL",
+              "source_ref": {"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"缓存与 TTL"}},
+              "text_md": "简化例子中到期时刻等于取得时刻加当时的 TTL。解析器 10:00:00 取得旧地址，TTL 为 120 秒；权威数据 10:00:30 更新。"
+            },
+            {
+              "section_id": "sec_3",
+              "title": "HTTP 请求与响应",
+              "source_ref": {"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"HTTP 请求与响应"}},
+              "text_md": "已能发送消息时，客户端请求资源，服务器处理后响应。GET /index.html 是请求，200 是响应状态。"
+            }
+          ],
+          "assessment_refs": [],
+          "existing_nodes": [
+            {
+              "node_ref": {"kind":"node","id":"node_goal_dns","revision":1},
+              "objectives": [{"id":"obj_roles","text":"能用一条地址查询说明递归解析器与权威服务器各自提供什么。"}],
+              "source_refs": [{"kind":"source","id":"src_rfc1035","revision":1,"locator":{"section":"§2.1 Overview"}}]
+            },
+            {
+              "node_ref": {"kind":"node","id":"node_goal_ttl","revision":1},
+              "objectives": [{"id":"obj_ttl_time","text":"能根据取得时间和 TTL 算出示例缓存的到期时刻。"}],
+              "source_refs": [{"kind":"source","id":"src_rfc1035","revision":1,"locator":{"section":"§3.2.1 Format"}}]
+            }
+          ],
+          "source_catalog": [
+            {
+              "id": "src_mini_book",
+              "revision": 1,
+              "media_type": "text/markdown",
+              "title": "一次网页访问中的查询和请求",
+              "example_file": "fixtures/network-mini-textbook.md",
+              "sections": [
+                {"title":"DNS 查询和记录","excerpt_md":"客户端向递归解析器请求地址记录。解析器可以从可用缓存或其他 DNS 服务器取得结果，权威服务器提供区域数据。"},
+                {"title":"缓存与 TTL","excerpt_md":"简化例子中到期时刻等于取得时刻加当时的 TTL。解析器 10:00:00 取得旧地址，TTL 为 120 秒；权威数据 10:00:30 更新。"},
+                {"title":"HTTP 请求与响应","excerpt_md":"已能发送消息时，客户端请求资源，服务器处理后响应。GET /index.html 是请求，200 是响应状态。"}
+              ]
+            },
+            {
+              "id": "src_rfc1035",
+              "revision": 1,
+              "media_type": "text/html",
+              "title": "RFC 1035 — Domain Names: Implementation and Specification",
+              "url": "https://www.rfc-editor.org/rfc/rfc1035.html",
+              "accessed_at": "2026-11-22T02:00:00Z",
+              "sections": [
+                {"title":"§2.1 Overview","excerpt_md":"该节介绍由域名空间、名称服务器和解析器组成的 DNS。解析器从名称服务器获取信息，并处理客户端的请求。"},
+                {"title":"§3.2.1 Format","excerpt_md":"资源记录的 TTL 字段用秒表示记录可以缓存的时长。"}
+              ]
+            },
+            {
+              "id": "src_rfc9110",
+              "revision": 1,
+              "media_type": "text/html",
+              "title": "RFC 9110 — HTTP Semantics",
+              "url": "https://www.rfc-editor.org/rfc/rfc9110.html#section-3.4",
+              "accessed_at": "2026-11-22T02:00:00Z",
+              "sections": [{"title":"§3.4 Messages","excerpt_md":"HTTP 客户端发送请求，服务器用一个或多个响应传达处理结果，消息包含用于表达语义的控制数据。"}]
+            }
+          ]
+        }
+      },
+      "expected": {
+        "schema_version": "1.0",
+        "workflow": "textbook_plan",
+        "request_id": "req_plan_add_book",
+        "outcome": "ok",
+        "result": {
+          "nodes": [
+            {
+              "temp_id": "unit_1",
+              "kind": "mainline",
+              "title": "DNS 查询",
+              "objectives": [{"id":"obj_roles","text":"能用一条地址查询说明递归解析器与权威服务器各自提供什么。"}],
+              "reading": {
+                "intro_md": "用一次域名更新认识查询角色。",
+                "steps": ["先读例子，再画出客户端、递归解析器与权威服务器三者。"],
+                "key_points": ["区分权威数据与递归解析器的作答。"],
+                "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"DNS 查询和记录"}}]
+              },
+              "activities": [
+                {
+                  "id": "act_dns",
+                  "kind": "checkpoint",
+                  "objective_ids": ["obj_roles"],
+                  "prompt_md": "一个客户端询问域名对应地址。递归解析器和权威服务器分别做什么？",
+                  "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"DNS 查询和记录"}}],
+                  "solution_md": "递归解析器向客户端提供查询结果，可用缓存或继续查询。权威服务器对相应区域的数据负责。"
+                }
+              ],
+              "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"DNS 查询和记录"}}]
+            },
+            {
+              "temp_id": "unit_2",
+              "kind": "mainline",
+              "title": "缓存与 TTL",
+              "objectives": [{"id":"obj_ttl_sources","text":"能结合 TTL 剩余时间和答案来源，说明为什么更新后一次查询仍可能得到旧地址。"}],
+              "reading": {
+                "intro_md": "用到期时刻解释一次旧答案。",
+                "steps": ["读 10:00:00 的例子，画三时刻时间线。"],
+                "key_points": ["按记录取得时刻计算到期，再判断可能的答案来源。"],
+                "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"缓存与 TTL"}}]
+              },
+              "activities": [
+                {
+                  "id": "act_ttl",
+                  "kind": "checkpoint",
+                  "objective_ids": ["obj_ttl_sources"],
+                  "prompt_md": "12:00:00 缓存旧记录，TTL 90 秒，权威记录 12:00:45 更新。12:01:00 仍可能收到旧地址吗？为什么？",
+                  "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"缓存与 TTL"}}],
+                  "solution_md": "12:01:30 到期。12:01:00 缓存仍有效，递归解析器可能用旧缓存回答。"
+                }
+              ],
+              "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"缓存与 TTL"}}]
+            },
+            {
+              "temp_id": "unit_3",
+              "kind": "mainline",
+              "title": "HTTP 消息",
+              "objectives": [{"id":"obj_http","text":"能在给定访问日志中辨认 HTTP 请求行和响应状态。"}],
+              "reading": {
+                "intro_md": "从两条日志辨认 HTTP 请求与响应。",
+                "steps": ["读 GET 与 200 的例子，对照它们各自经过的方向。"],
+                "key_points": ["GET 示意请求，200 属于响应状态。"],
+                "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"HTTP 请求与响应"}}]
+              },
+              "activities": [
+                {
+                  "id": "act_msg",
+                  "kind": "checkpoint",
+                  "objective_ids": ["obj_http"],
+                  "prompt_md": "日志出现 GET /notes 和 200，分别表示哪一侧发送了什么？",
+                  "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"HTTP 请求与响应"}}],
+                  "solution_md": "客户端请求 /notes 的表示；服务端给出成功响应状态 200。"
+                }
+              ],
+              "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"HTTP 请求与响应"}}]
+            }
+          ],
+          "routes": [
+            {
+              "kind": "full",
+              "title": "短教材全书",
+              "node_ids": ["unit_1","unit_2","unit_3"],
+              "counted_node_ids": ["unit_1","unit_2","unit_3"],
+              "edges": [
+                {
+                  "kind": "prerequisite",
+                  "from_node_id": "unit_1",
+                  "to_node_id": "unit_2",
+                  "target_objective_id": "obj_ttl_sources",
+                  "reason_md": "解释旧答案来源需要区分权威数据与递归解析器缓存。"
+                }
+              ]
+            },
+            {
+              "kind": "core",
+              "title": "查询与请求核心",
+              "node_ids": ["unit_1","unit_3"],
+              "counted_node_ids": ["unit_1","unit_3"],
+              "edges": []
+            }
+          ],
+          "coverage": [
+            {
+              "section_id": "sec_1",
+              "node_ids": ["unit_1"],
+              "disposition": "taught",
+              "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"DNS 查询和记录"}}]
+            },
+            {
+              "section_id": "sec_2",
+              "node_ids": ["unit_2"],
+              "disposition": "taught",
+              "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"缓存与 TTL"}}]
+            },
+            {
+              "section_id": "sec_3",
+              "node_ids": ["unit_3"],
+              "disposition": "taught",
+              "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"HTTP 请求与响应"}}]
+            }
+          ],
+          "practice_alignment": [
+            {"activity_id":"act_dns","node_id":"unit_1","objective_ids":["obj_roles"],"check":"题面、题解和来源都在本节点目标范围内。"},
+            {"activity_id":"act_ttl","node_id":"unit_2","objective_ids":["obj_ttl_sources"],"check":"题面、题解和来源都在本节点目标范围内。"},
+            {"activity_id":"act_msg","node_id":"unit_3","objective_ids":["obj_http"],"check":"题面、题解和来源都在本节点目标范围内。"}
+          ],
+          "reuse": [
+            {
+              "temp_node_id": "unit_1",
+              "existing_node_ref": {"kind":"node","id":"node_goal_dns","revision":1},
+              "equivalent": true,
+              "reason_md": "查询角色、目标要求与深度一致，可补短教材例子。",
+              "added_source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"DNS 查询和记录"}}]
+            },
+            {
+              "temp_node_id": "unit_2",
+              "existing_node_ref": {"kind":"node","id":"node_goal_ttl","revision":1},
+              "equivalent": false,
+              "reason_md": "旧节点只要求计算到期时刻，新目标还要求解释权威与缓存答案来源。",
+              "added_source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"缓存与 TTL"}}]
+            }
+          ],
+          "verification": {"coverage":"pass","prerequisites":"pass","activities":"pass","issues":[]}
+        },
+        "issues": []
+      },
+      "expected_applied": {
+        "graph_id": "g_web_goal",
+        "graph_status": "ready",
+        "reused_node": {
+          "id": "node_goal_dns",
+          "graph_id": "g_web_goal",
+          "revision": 2,
+          "kind": "predicted",
+          "title": "DNS 查询",
+          "objectives": [{"id":"obj_roles","text":"能用一条地址查询说明递归解析器与权威服务器各自提供什么。"}],
+          "reading": {
+            "intro_md": "用一次域名更新认识查询角色。",
+            "steps": ["先读例子，再画出客户端、递归解析器与权威服务器三者。"],
+            "key_points": ["区分权威数据与递归解析器的作答。"],
+            "source_refs": [
+              {"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"DNS 查询和记录"}},
+              {"kind":"source","id":"src_rfc1035","revision":1,"locator":{"section":"§2.1 Overview"}}
+            ]
+          },
+          "activities": [
+            {
+              "id": "act_dns",
+              "kind": "checkpoint",
+              "objective_ids": ["obj_roles"],
+              "prompt_md": "一个客户端询问域名对应地址。递归解析器和权威服务器分别做什么？",
+              "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"DNS 查询和记录"}}],
+              "solution_md": "递归解析器向客户端提供查询结果，可用缓存或继续查询。权威服务器对相应区域的数据负责。"
+            }
+          ],
+          "source_refs": [
+            {"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"DNS 查询和记录"}},
+            {"kind":"source","id":"src_rfc1035","revision":1,"locator":{"section":"§2.1 Overview"}}
+          ]
+        },
+        "new_requirements_for": ["obj_ttl_sources"],
+        "still_findable_refs": [
+          {"kind":"node","id":"node_goal_dns","revision":1},
+          {"kind":"record","id":"rec_goal_dns","revision":1},
+          {"kind":"record","id":"rec_goal_ttl","revision":1}
+        ]
+      },
+      "reuse_in_teaching": {
+        "reply_md": "用你之前区分的两个角色，这次请从递归解析器的视角判断它还能用旧缓存多久。",
+        "used_refs": [
+          {"kind":"record","id":"rec_goal_dns","revision":1},
+          {"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"缓存与 TTL"}}
+        ]
+      }
+    }
+  },
+  "exam_flow": {
+    "initial_focus": {
+      "graph_id": "g_network",
+      "node_id": "node_a",
+      "revision": 3,
+      "checkpoint": {"section_id":"example_update","record_ref":{"kind":"record","id":"rec_ask_from_a","revision":1}},
+      "lock": null
+    },
+    "preview": {
+      "method": "GET",
+      "path": "/api/v1/exams/node_e/preview",
+      "expected_status": 200,
+      "response": {
+        "data": {
+          "duration_seconds": 600,
+          "allowed_materials": [],
+          "objectives": [{"id":"obj_ttl_sources","text":"能结合 TTL 剩余时间和答案来源，说明为什么更新后一次查询仍可能得到旧地址。"}],
+          "rules_md": "闭卷。开始后连续计时，当前焦点锁定在本场；可确认提前交卷。",
+          "preview_revision": 1
+        }
+      }
+    },
+    "start": {
+      "method": "POST",
+      "path": "/api/v1/exams/node_e/start",
+      "expected_status": 201,
+      "response": {
+        "data": {
+          "attempt": {
+            "id": "attempt_dns_1",
+            "node_id": "node_e",
+            "status": "active",
+            "question_set_revision": 1,
+            "started_at": "2026-11-22T02:00:00Z",
+            "deadline_at": "2026-11-22T02:10:00Z"
+          },
+          "items": [
+            {
+              "id": "item_dns_ttl",
+              "revision": 1,
+              "prompt_md": "解析器 12:00:00 缓存旧地址，TTL 120 秒。12:00:40 权威数据更新，12:01:30 客户端问该解析器。仍可能得到旧地址吗？说明理由。",
+              "objective_ids": ["obj_ttl_sources"]
+            }
+          ],
+          "server_time": "2026-11-22T02:00:00Z",
+          "focus": {
+            "graph_id": "g_network",
+            "node_id": "node_e",
+            "revision": 4,
+            "checkpoint": {"section_id":"attempt"},
+            "lock": {"kind":"exam","attempt_id":"attempt_dns_1"}
+          }
+        }
+      },
+      "body": {"confirmed":true,"preview_revision":1,"expected_focus_revision":3},
+      "headers": {"Idempotency-Key":"exam-start-1"}
+    },
+    "answer": {
+      "method": "PUT",
+      "path": "/api/v1/attempts/attempt_dns_1/answers/item_dns_ttl",
+      "expected_status": 200,
+      "response": {
+        "data": {"item_id":"item_dns_ttl","revision":1,"body_md":"还有 30 秒才到期，可以继续使用旧缓存。","saved_at":"2026-11-22T02:05:00Z"}
+      },
+      "body": {"body_md":"还有 30 秒才到期，可以继续使用旧缓存。","base_revision":null},
+      "headers": {"Idempotency-Key":"exam-answer-1"}
+    },
+    "expires": {
+      "clock_at": "2026-11-22T02:10:00Z",
+      "attempt": {
+        "id": "attempt_dns_1",
+        "node_id": "node_e",
+        "status": "expired",
+        "question_set_revision": 1,
+        "started_at": "2026-11-22T02:00:00Z",
+        "deadline_at": "2026-11-22T02:10:00Z",
+        "submitted_at": "2026-11-22T02:10:00Z"
+      },
+      "official_answers": [{"item_id":"item_dns_ttl","revision":1,"body_md":"还有 30 秒才到期，可以继续使用旧缓存。","saved_at":"2026-11-22T02:05:00Z"}],
+      "focus": {"graph_id":"g_network","node_id":"node_e","revision":5,"checkpoint":{"section_id":"exam_review"},"lock":null},
+      "question_ref": {"kind":"exam_item","id":"item_dns_ttl","revision":1}
+    },
+    "review_example": {
+      "body_md": "你正确算出了时间。可以再说明旧答案由哪个角色给出、权威数据更新为什么不会立刻改变缓存。",
+      "refs": [
+        {"kind":"exam_item","id":"item_dns_ttl","revision":1},
+        {"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"DNS 查询和记录"}},
+        {"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"缓存与 TTL"}}
+      ],
+      "focus_node_id": "node_e"
+    }
+  },
+  "workflows": {
+    "textbook_plan": {
+      "request": {
+        "schema_version": "1.0",
+        "workflow": "textbook_plan",
+        "request_id": "req_plan_01",
+        "input": {
+          "goal": "根据一份网页访问日志，说明域名查询和 HTTP 请求分别在做什么，并判断缓存何时到期。",
+          "intent": "full",
+          "scope": {"kind":"all","section_ids":["sec_1","sec_2","sec_3"]},
+          "sections": [
+            {
+              "section_id": "sec_1",
+              "title": "DNS 查询和记录",
+              "source_ref": {"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"DNS 查询和记录"}},
+              "text_md": "客户端向递归解析器请求地址记录。解析器可以从可用缓存或其他 DNS 服务器取得结果，权威服务器提供区域数据。"
+            },
+            {
+              "section_id": "sec_2",
+              "title": "缓存与 TTL",
+              "source_ref": {"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"缓存与 TTL"}},
+              "text_md": "简化例子中到期时刻等于取得时刻加当时的 TTL。解析器 10:00:00 取得旧地址，TTL 为 120 秒；权威数据 10:00:30 更新。"
+            },
+            {
+              "section_id": "sec_3",
+              "title": "HTTP 请求与响应",
+              "source_ref": {"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"HTTP 请求与响应"}},
+              "text_md": "已能发送消息时，客户端请求资源，服务器处理后响应。GET /index.html 是请求，200 是响应状态。"
+            }
+          ],
+          "assessment_refs": [],
+          "existing_nodes": [],
+          "source_catalog": [
+            {
+              "id": "src_mini_book",
+              "revision": 1,
+              "media_type": "text/markdown",
+              "title": "一次网页访问中的查询和请求",
+              "example_file": "fixtures/network-mini-textbook.md",
+              "sections": [
+                {"title":"DNS 查询和记录","excerpt_md":"客户端向递归解析器请求地址记录。解析器可以从可用缓存或其他 DNS 服务器取得结果，权威服务器提供区域数据。"},
+                {"title":"缓存与 TTL","excerpt_md":"简化例子中到期时刻等于取得时刻加当时的 TTL。解析器 10:00:00 取得旧地址，TTL 为 120 秒；权威数据 10:00:30 更新。"},
+                {"title":"HTTP 请求与响应","excerpt_md":"已能发送消息时，客户端请求资源，服务器处理后响应。GET /index.html 是请求，200 是响应状态。"}
+              ]
+            }
+          ]
+        }
+      },
+      "expected": {
+        "schema_version": "1.0",
+        "workflow": "textbook_plan",
+        "request_id": "req_plan_01",
+        "outcome": "ok",
+        "result": {
+          "nodes": [
+            {
+              "temp_id": "unit_1",
+              "kind": "mainline",
+              "title": "DNS 查询",
+              "objectives": [{"id":"obj_roles","text":"能用一条地址查询说明递归解析器与权威服务器各自提供什么。"}],
+              "reading": {
+                "intro_md": "用一次域名更新认识查询角色。",
+                "steps": ["先读例子，再画出客户端、递归解析器与权威服务器三者。"],
+                "key_points": ["区分权威数据与递归解析器的作答。"],
+                "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"DNS 查询和记录"}}]
+              },
+              "activities": [
+                {
+                  "id": "act_dns",
+                  "kind": "checkpoint",
+                  "objective_ids": ["obj_roles"],
+                  "prompt_md": "一个客户端询问域名对应地址。递归解析器和权威服务器分别做什么？",
+                  "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"DNS 查询和记录"}}],
+                  "solution_md": "递归解析器向客户端提供查询结果，可用缓存或继续查询。权威服务器对相应区域的数据负责。"
+                }
+              ],
+              "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"DNS 查询和记录"}}]
+            },
+            {
+              "temp_id": "unit_2",
+              "kind": "mainline",
+              "title": "缓存与 TTL",
+              "objectives": [{"id":"obj_ttl_sources","text":"能结合 TTL 剩余时间和答案来源，说明为什么更新后一次查询仍可能得到旧地址。"}],
+              "reading": {
+                "intro_md": "用到期时刻解释一次旧答案。",
+                "steps": ["读 10:00:00 的例子，画三时刻时间线。"],
+                "key_points": ["按记录取得时刻计算到期，再判断可能的答案来源。"],
+                "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"缓存与 TTL"}}]
+              },
+              "activities": [
+                {
+                  "id": "act_ttl",
+                  "kind": "checkpoint",
+                  "objective_ids": ["obj_ttl_sources"],
+                  "prompt_md": "12:00:00 缓存旧记录，TTL 90 秒，权威记录 12:00:45 更新。12:01:00 仍可能收到旧地址吗？为什么？",
+                  "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"缓存与 TTL"}}],
+                  "solution_md": "12:01:30 到期。12:01:00 缓存仍有效，递归解析器可能用旧缓存回答。"
+                }
+              ],
+              "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"缓存与 TTL"}}]
+            },
+            {
+              "temp_id": "unit_3",
+              "kind": "mainline",
+              "title": "HTTP 消息",
+              "objectives": [{"id":"obj_http","text":"能在给定访问日志中辨认 HTTP 请求行和响应状态。"}],
+              "reading": {
+                "intro_md": "从两条日志辨认 HTTP 请求与响应。",
+                "steps": ["读 GET 与 200 的例子，对照它们各自经过的方向。"],
+                "key_points": ["GET 示意请求，200 属于响应状态。"],
+                "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"HTTP 请求与响应"}}]
+              },
+              "activities": [
+                {
+                  "id": "act_msg",
+                  "kind": "checkpoint",
+                  "objective_ids": ["obj_http"],
+                  "prompt_md": "日志出现 GET /notes 和 200，分别表示哪一侧发送了什么？",
+                  "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"HTTP 请求与响应"}}],
+                  "solution_md": "客户端请求 /notes 的表示；服务端给出成功响应状态 200。"
+                }
+              ],
+              "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"HTTP 请求与响应"}}]
+            }
+          ],
+          "routes": [
+            {
+              "kind": "full",
+              "title": "短教材全书",
+              "node_ids": ["unit_1","unit_2","unit_3"],
+              "counted_node_ids": ["unit_1","unit_2","unit_3"],
+              "edges": [
+                {
+                  "kind": "prerequisite",
+                  "from_node_id": "unit_1",
+                  "to_node_id": "unit_2",
+                  "target_objective_id": "obj_ttl_sources",
+                  "reason_md": "解释旧答案来源需要区分权威数据与递归解析器缓存。"
+                }
+              ]
+            },
+            {
+              "kind": "core",
+              "title": "查询与请求核心",
+              "node_ids": ["unit_1","unit_3"],
+              "counted_node_ids": ["unit_1","unit_3"],
+              "edges": []
+            }
+          ],
+          "coverage": [
+            {
+              "section_id": "sec_1",
+              "node_ids": ["unit_1"],
+              "disposition": "taught",
+              "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"DNS 查询和记录"}}]
+            },
+            {
+              "section_id": "sec_2",
+              "node_ids": ["unit_2"],
+              "disposition": "taught",
+              "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"缓存与 TTL"}}]
+            },
+            {
+              "section_id": "sec_3",
+              "node_ids": ["unit_3"],
+              "disposition": "taught",
+              "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"HTTP 请求与响应"}}]
+            }
+          ],
+          "practice_alignment": [
+            {"activity_id":"act_dns","node_id":"unit_1","objective_ids":["obj_roles"],"check":"题面、题解和来源都在本节点目标范围内。"},
+            {"activity_id":"act_ttl","node_id":"unit_2","objective_ids":["obj_ttl_sources"],"check":"题面、题解和来源都在本节点目标范围内。"},
+            {"activity_id":"act_msg","node_id":"unit_3","objective_ids":["obj_http"],"check":"题面、题解和来源都在本节点目标范围内。"}
+          ],
+          "reuse": [],
+          "verification": {"coverage":"pass","prerequisites":"pass","activities":"pass","issues":[]}
+        },
+        "issues": []
+      },
+      "missing_source": {
+        "request": {
+          "schema_version": "1.0",
+          "workflow": "textbook_plan",
+          "request_id": "req_plan_missing",
+          "input": {
+            "goal": "根据一份网页访问日志，说明域名查询和 HTTP 请求分别在做什么，并判断缓存何时到期。",
+            "intent": "full",
+            "scope": {"kind":"all","section_ids":["sec_1","sec_2","sec_3"]},
+            "sections": [
+              {
+                "section_id": "sec_1",
+                "title": "DNS 查询和记录",
+                "source_ref": {"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"DNS 查询和记录"}},
+                "text_md": "客户端向递归解析器请求地址记录。解析器可以从可用缓存或其他 DNS 服务器取得结果，权威服务器提供区域数据。"
+              },
+              {
+                "section_id": "sec_3",
+                "title": "HTTP 请求与响应",
+                "source_ref": {"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"HTTP 请求与响应"}},
+                "text_md": "已能发送消息时，客户端请求资源，服务器处理后响应。GET /index.html 是请求，200 是响应状态。"
+              }
+            ],
+            "assessment_refs": [],
+            "existing_nodes": [],
+            "source_catalog": [
+              {
+                "id": "src_mini_book",
+                "revision": 1,
+                "media_type": "text/markdown",
+                "title": "一次网页访问中的查询和请求",
+                "example_file": "fixtures/network-mini-textbook.md",
+                "sections": [
+                  {"title":"DNS 查询和记录","excerpt_md":"客户端向递归解析器请求地址记录。解析器可以从可用缓存或其他 DNS 服务器取得结果，权威服务器提供区域数据。"},
+                  {"title":"缓存与 TTL","excerpt_md":"简化例子中到期时刻等于取得时刻加当时的 TTL。解析器 10:00:00 取得旧地址，TTL 为 120 秒；权威数据 10:00:30 更新。"},
+                  {"title":"HTTP 请求与响应","excerpt_md":"已能发送消息时，客户端请求资源，服务器处理后响应。GET /index.html 是请求，200 是响应状态。"}
+                ]
+              }
+            ]
+          }
+        },
+        "expected": {
+          "schema_version": "1.0",
+          "workflow": "textbook_plan",
+          "request_id": "req_plan_missing",
+          "outcome": "needs_source",
+          "result": null,
+          "issues": [{"code":"MISSING_SECTION","section_id":"sec_2","message":"编排范围包含「缓存与 TTL」，请补上该节。"}]
+        }
+      }
+    },
+    "resume_branch": {
+      "request": {
+        "schema_version": "1.0",
+        "workflow": "resume_branch",
+        "request_id": "req_resume_01",
+        "input": {
+          "focus": {
+            "graph_id": "g_network",
+            "node_id": "node_a",
+            "revision": 3,
+            "checkpoint": {"section_id":"example_update","record_ref":{"kind":"record","id":"rec_ask_from_a","revision":1}},
+            "lock": null
+          },
+          "focus_node": {
+            "id": "node_a",
+            "graph_id": "g_network",
+            "revision": 1,
+            "kind": "mainline",
+            "title": "DNS 查询",
+            "objectives": [{"id":"obj_roles","text":"能用一条地址查询说明递归解析器与权威服务器各自提供什么。"}],
+            "reading": {
+              "intro_md": "用一次域名更新认识查询角色。",
+              "steps": ["先读例子，再画出客户端、递归解析器与权威服务器三者。"],
+              "key_points": ["区分权威数据与递归解析器的作答。"],
+              "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"DNS 查询和记录"}}]
+            },
+            "activities": [
+              {
+                "id": "act_dns",
+                "kind": "checkpoint",
+                "objective_ids": ["obj_roles"],
+                "prompt_md": "一个客户端询问域名对应地址。递归解析器和权威服务器分别做什么？",
+                "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"DNS 查询和记录"}}]
+              }
+            ],
+            "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"DNS 查询和记录"}}]
+          },
+          "origin_question": {
+            "id": "rec_ask_from_a",
+            "graph_id": "g_network",
+            "node_id": "node_a",
+            "revision": 1,
+            "kind": "question",
+            "body_md": "权威地址已更新，为什么同一个递归解析器还可能回旧地址？我想对照 B 的 TTL 例子。",
+            "refs": [
+              {"kind":"node","id":"node_b","revision":1},
+              {"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"缓存与 TTL"}}
+            ],
+            "created_at": "2026-11-22T02:00:00Z"
+          },
+          "branch_records": [
+            {
+              "id": "rec_s_note",
+              "graph_id": "g_network",
+              "node_id": "node_s",
+              "revision": 1,
+              "kind": "explanation",
+              "body_md": "解析器 10:00:00 取得旧地址，TTL 为 120 秒，10:02:00 才到期。10:01:00 的查询到达时，缓存里的旧记录还有效。",
+              "refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"缓存与 TTL"}}],
+              "created_at": "2026-11-22T02:00:00Z"
+            }
+          ],
+          "allowed_refs": [
+            {"kind":"record","id":"rec_ask_from_a","revision":1},
+            {"kind":"record","id":"rec_s_note","revision":1},
+            {"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"DNS 查询和记录"}},
+            {"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"缓存与 TTL"}}
+          ]
+        }
+      },
+      "expected": {
+        "schema_version": "1.0",
+        "workflow": "resume_branch",
+        "request_id": "req_resume_01",
+        "outcome": "ok",
+        "result": {
+          "reply_md": "你算出 10:01:00 时缓存仍有效，因此即使权威数据已经变更，解析器也可能继续用旧缓存作答。",
+          "used_refs": [{"kind":"record","id":"rec_s_note","revision":1}],
+          "next_step_md": "回到主线例子，试用一句话说清楚是谁向客户端返回了旧地址。"
+        },
+        "issues": []
+      },
+      "alternate": {
+        "request": {
+          "schema_version": "1.0",
+          "workflow": "resume_branch",
+          "request_id": "req_resume_02",
+          "input": {
+            "focus": {
+              "graph_id": "g_network",
+              "node_id": "node_a",
+              "revision": 3,
+              "checkpoint": {"section_id":"example_update","record_ref":{"kind":"record","id":"rec_ask_from_a","revision":1}},
+              "lock": null
+            },
+            "focus_node": {
+              "id": "node_a",
+              "graph_id": "g_network",
+              "revision": 1,
+              "kind": "mainline",
+              "title": "DNS 查询",
+              "objectives": [{"id":"obj_roles","text":"能用一条地址查询说明递归解析器与权威服务器各自提供什么。"}],
+              "reading": {
+                "intro_md": "用一次域名更新认识查询角色。",
+                "steps": ["先读例子，再画出客户端、递归解析器与权威服务器三者。"],
+                "key_points": ["区分权威数据与递归解析器的作答。"],
+                "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"DNS 查询和记录"}}]
+              },
+              "activities": [
+                {
+                  "id": "act_dns",
+                  "kind": "checkpoint",
+                  "objective_ids": ["obj_roles"],
+                  "prompt_md": "一个客户端询问域名对应地址。递归解析器和权威服务器分别做什么？",
+                  "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"DNS 查询和记录"}}]
+                }
+              ],
+              "source_refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"DNS 查询和记录"}}]
+            },
+            "origin_question": {
+              "id": "rec_ask_from_a",
+              "graph_id": "g_network",
+              "node_id": "node_a",
+              "revision": 1,
+              "kind": "question",
+              "body_md": "权威地址已更新，为什么同一个递归解析器还可能回旧地址？我想对照 B 的 TTL 例子。",
+              "refs": [
+                {"kind":"node","id":"node_b","revision":1},
+                {"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"缓存与 TTL"}}
+              ],
+              "created_at": "2026-11-22T02:00:00Z"
+            },
+            "branch_records": [
+              {
+                "id": "rec_s_alt",
+                "graph_id": "g_network",
+                "node_id": "node_s",
+                "revision": 1,
+                "kind": "explanation",
+                "body_md": "这次查询发生在 10:03:00，原记录已于 10:02:00 到期。我按例题假设重新查询成功，拿到了权威数据给出的新地址。",
+                "refs": [{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"缓存与 TTL"}}],
+                "created_at": "2026-11-22T02:00:00Z"
+              }
+            ],
+            "allowed_refs": [
+              {"kind":"record","id":"rec_ask_from_a","revision":1},
+              {"kind":"record","id":"rec_s_alt","revision":1},
+              {"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"DNS 查询和记录"}},
+              {"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"缓存与 TTL"}}
+            ]
+          }
+        },
+        "expected": {
+          "schema_version": "1.0",
+          "workflow": "resume_branch",
+          "request_id": "req_resume_02",
+          "outcome": "ok",
+          "result": {
+            "reply_md": "你把查询放到了 10:03:00。旧缓存已到期，这次又成功取得权威数据的新地址，因此原问题里的旧答案现象在这个例子中没有发生。",
+            "used_refs": [{"kind":"record","id":"rec_s_alt","revision":1}],
+            "next_step_md": "比较 10:01:00 和 10:03:00 两次查询，指出哪条条件改变了答案。"
+          },
+          "issues": []
+        }
+      }
+    }
+  }
+}
