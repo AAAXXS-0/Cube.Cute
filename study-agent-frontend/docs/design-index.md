@@ -10,6 +10,7 @@
 | 节点与教材备课 | [节点概念与教材编排](node-concept-draft.md) | 三类学习节点、教材来源、导入问项、全书覆盖、必要前置和验题。 |
 | 路线、分支及合并 | [路线与 merge](path-and-merge-draft.md) | 推荐顺序、必要前置、返回原处、手动整理、原图增加教材。 |
 | 上下文和长期记录 | [Teacher、Keeper 与检索](teacher-keeper-retrieval-draft.md) | 单焦点、引用、检索时机、提示撤回、长期保存和版本。 |
+| 教学工具接口 | [Teacher 与 Keeper 的工具契约](development/06-agent-tools.md) | 个人记录搜索、精确版本读取、公开资料搜索与核对。 |
 | 检查怎样支持后续学习 | [反馈与节点学习](feedback-and-node-learning.md) | 人写完整后再核查，修正、独立表现与后续帮助的关系。 |
 
 ## 留存的讨论与出处

@@ -1,6 +1,101 @@
 {
   "schema_version": "1.0",
   "fixture_note": "合成联调数据。时间为固定测试时钟，内部题组和参考解仅用于开发种子。",
+  "tool_cases": {
+    "teacher_known_reference": {
+      "role": "teacher",
+      "operation": "ask",
+      "calls": [{
+        "tool": "read_reference",
+        "args": {"ref":{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"缓存与 TTL"}}},
+        "response": {"data":{
+          "ref":{"kind":"source","id":"src_mini_book","revision":1,"locator":{"section":"缓存与 TTL"}},
+          "title":"一次网页访问中的查询和请求",
+          "body_md":"DNS 资源记录的 TTL 以秒表示，可用于限定该记录的一般缓存寿命。教材示例把解析器取得记录的时刻记为起点，忽略刷新、预取和到期后服务旧数据等扩展策略。这个简化例子里的到期时刻为「取得时刻 + 当时的 TTL」。"
+        }}
+      }]
+    },
+    "teacher_no_match": {
+      "role": "teacher",
+      "operation": "ask",
+      "calls": [{
+        "tool":"search_study_records",
+        "args":{"query":"用户上次比较两个递归解析器的练习","scope":"focus_graph","limit":3},
+        "response":{"data":{"matches":[]}}
+      }]
+    },
+    "teacher_missing_revision": {
+      "role": "teacher",
+      "operation": "check",
+      "calls": [{
+        "tool":"read_reference",
+        "args":{"ref":{"kind":"record","id":"rec_ttl_expression","revision":99}},
+        "response":{"error":{"code":"REF_UNAVAILABLE","message":"这次找不到第 99 版表达。","details":{}}}
+      }]
+    },
+    "keeper_cross_graph": {
+      "role": "keeper",
+      "operation": "find_related",
+      "calls": [
+        {
+          "tool":"search_study_records",
+          "args":{"query":"缓存到期边界 数轴 半开区间","scope":"learner_history","limit":3},
+          "response":{"data":{"matches":[{
+            "ref":{"kind":"record","id":"rec_interval_note","revision":1},
+            "title":"半开区间笔记",
+            "excerpt_md":"半开区间 [a,b) 含左端点，不含右端点。"
+          }]}}
+        },
+        {
+          "tool":"read_reference",
+          "args":{"ref":{"kind":"record","id":"rec_interval_note","revision":1}},
+          "response":{"data":{
+            "ref":{"kind":"record","id":"rec_interval_note","revision":1},
+            "title":"半开区间笔记",
+            "body_md":"半开区间 [a,b) 含左端点，不含右端点。数轴有助于看出边界值属于哪一边。"
+          }}
+        }
+      ],
+      "expected":{"relation_kind":"analogy","source_ref":{"kind":"record","id":"rec_interval_note","revision":1}}
+    },
+    "teacher_public_source": {
+      "role": "teacher",
+      "operation": "goal",
+      "calls": [
+        {
+          "tool":"search_public_sources",
+          "args":{"query":"DNS 资源记录 TTL 字段 RFC 1035","limit":3},
+          "response":{"data":{"matches":[{
+            "candidate_id":"public_candidate_1035",
+            "title":"RFC 1035",
+            "url":"https://www.rfc-editor.org/rfc/rfc1035.html",
+            "excerpt_md":"域名系统的资源记录格式。"
+          }]}}
+        },
+        {
+          "tool":"read_public_source",
+          "args":{"candidate_id":"public_candidate_1035","section":"§3.2.1 Format"},
+          "response":{"data":{
+            "ref":{"kind":"source","id":"src_rfc1035","revision":1,"locator":{"section":"§3.2.1 Format"}},
+            "title":"RFC 1035",
+            "url":"https://www.rfc-editor.org/rfc/rfc1035.html",
+            "accessed_at":"2026-11-22T02:00:00Z",
+            "body_md":"资源记录的 TTL 字段用秒表示记录可以缓存的时长。"
+          }},
+          "alternate_response":{"error":{"code":"TOOL_UNAVAILABLE","message":"暂时读不到该来源正文。","details":{}}}
+        }
+      ]
+    },
+    "teacher_during_exam": {
+      "role": "teacher",
+      "operation": "exam_rules",
+      "calls": [{
+        "tool":"search_study_records",
+        "args":{"query":"本场涉及的 TTL 例题","scope":"focus_node"},
+        "response":{"error":{"code":"EXAM_LOCKED","message":"计时作答的规则对话未开放教学检索。","details":{}}}
+      }]
+    }
+  },
   "feedback_case": {
     "submitted": {
       "id": "rec_ttl_expression", "graph_id": "g_network", "node_id": "node_b", "revision": 1,

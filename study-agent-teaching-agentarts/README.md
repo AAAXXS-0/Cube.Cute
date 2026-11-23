@@ -4,6 +4,8 @@
 
 第一份可交付结果是用自编短教材和两份不同支线结果验证教材编排与验收、支线返回续学两段 AgentArts 工作流。
 
+本地实现、复跑命令和控制台配置见 [agentarts/](../agentarts/README.md)。
+
 ## 从这里开工
 
 1. 读 [AGENTS](AGENTS.md) 和[共同起步](docs/development/00-start.md)。
