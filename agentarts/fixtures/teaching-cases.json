@@ -1,0 +1,101 @@
+{
+  "source_bindings": {
+    "goal_candidates": "examples.json#goal_flow",
+    "expression_check_and_evidence": "examples.json#feedback_case",
+    "keeper_relation": "examples.json#keeper_case",
+    "add_textbook_and_reuse": "examples.json#goal_flow.add_textbook"
+  },
+  "tool_cases": {
+    "keeper_unrelated": {
+      "role": "keeper",
+      "operation": "find_related",
+      "calls": [
+        {
+          "tool": "search_study_records",
+          "args": {"query": "缓存 TTL 到期", "scope": "learner_history", "limit": 3},
+          "response": {"data": {"matches": [{
+            "ref": {"kind": "record", "id": "rec_library_labels", "revision": 1},
+            "title": "图书馆整理活动", "excerpt_md": "TTL 是这次给童话类书签使用的标签。"
+          }]}}
+        },
+        {
+          "tool": "read_reference",
+          "args": {"ref": {"kind": "record", "id": "rec_library_labels", "revision": 1}},
+          "response": {"data": {
+            "ref": {"kind": "record", "id": "rec_library_labels", "revision": 1},
+            "title": "图书馆整理活动", "body_md": "TTL 是这次给童话类书签使用的标签，方便按阅读活动整理书签。"
+          }}
+        }
+      ],
+      "expected": {"suggestion_count": 0, "reason_md": "旧材料与缓存问题仅有词面重合。"}
+    }
+  },
+  "merge": {
+    "input": {
+      "records": [
+        {"id": "rec_goal_dns", "revision": 1, "body_md": "客户端问递归解析器。解析器可用已有缓存或继续查询，权威服务器提供那个区域的数据。"},
+        {"id": "rec_goal_ttl", "revision": 1, "body_md": "10:00:00 取得的结果，TTL 是 120 秒，所以 10:02:00 到期。"}
+      ]
+    },
+    "expected": {
+      "summary_md": "先区分客户端从谁取得地址，再根据解析器何时缓存该地址及其 TTL 判断该记录是否仍有效。",
+      "used_refs": [{"kind": "record", "id": "rec_goal_dns", "revision": 1}, {"kind": "record", "id": "rec_goal_ttl", "revision": 1}]
+    }
+  },
+  "keeper_recheck": {
+    "input": {
+      "suggestion_id": "suggestion_wrong_interval",
+      "reason_md": "学习 TTL 必须先完成区间表示。",
+      "opened": true,
+      "context": "当前学习者已经能根据取得时间和 TTL 判断缓存何时到期。半开区间是这道题的可选画法。"
+    },
+    "expected": {
+      "suggestion_id": "suggestion_wrong_interval",
+      "correction_md": "半开区间只是画时间线时可用的类比。本例可直接按取得时刻和 TTL 计算。"
+    }
+  },
+  "exam_check": {
+    "input": {
+      "item": {"id": "item_ttl_missing", "revision": 1, "prompt_md": "解析器缓存旧地址，TTL 120 秒。权威地址在 12:00:40 更新。12:01:30 查询是否可能拿到旧地址？", "authoring_note_md": "备课快照记录解析器在 12:00:00 取得旧地址，这一条件遗漏于考生所见题面。"},
+      "report_md": "题面缺少解析器取得旧地址的时间。",
+      "can_apply_erratum": true
+    },
+    "expected": {
+      "item_id": "item_ttl_missing",
+      "checked_revision": 1,
+      "disposition": "erratum",
+      "reason_md": "题目缺少计算到期时间的起点。补足原定起点后即可判断。",
+      "corrected_prompt_md": "解析器在 12:00:00 取得并缓存旧地址，TTL 为 120 秒。权威地址在 12:00:40 更新。12:01:30 向该解析器查询时，是否仍可能拿到旧地址？说明理由。"
+    }
+  },
+  "exam_check_late": {
+    "input_case": "exam_check",
+    "input_overrides": {"can_apply_erratum": false},
+    "expected": {
+      "item_id": "item_ttl_missing",
+      "checked_revision": 1,
+      "disposition": "void",
+      "reason_md": "题面缺少计算到期时间的起点，剩余时间不足以按勘误作答。该题作废，保留已写过程供复盘。"
+    }
+  },
+  "exam_rule_reply": {
+    "input": {"message_md": "这道题怎么计算？我能跳过它吗？", "attempt_rule": "允许跳题，可先记录想到的步骤，交卷后复盘。"},
+    "expected": {
+      "reply_md": "可以先跳过这道题，也可以保存已经想到的一两步。交卷后我们再一起看这道题。",
+      "used_refs": [], "feedback": [], "evidence": [], "suggestions": []
+    }
+  },
+  "exam_review": {
+    "input": {
+      "question_ref": {"kind": "exam_item", "id": "item_dns_ttl", "revision": 1},
+      "item_prompt_md": "解析器 12:00:00 缓存旧地址，TTL 120 秒。12:00:40 权威数据更新，12:01:30 客户端问该解析器。仍可能得到旧地址吗？说明理由。",
+      "official_answer_md": "还有 30 秒才到期，可以继续使用旧缓存。"
+    },
+    "expected": {
+      "reply_md": "到期时间和剩余 30 秒都算对了。接着说明为什么权威数据更新后，递归解析器仍然可以用已有缓存作答。",
+      "used_refs": [{"kind": "exam_item", "id": "item_dns_ttl", "revision": 1}],
+      "followup_practice": {"prompt_md": "另一次查询发生在原记录到期后，重新查询成功。请说出是谁给出新地址，以及哪条条件改变了答案。"},
+      "evidence": []
+    }
+  }
+}

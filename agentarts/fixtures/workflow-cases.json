@@ -1,0 +1,74 @@
+{
+  "textbook-rate": {
+    "request": {
+      "schema_version": "1.0",
+      "workflow": "textbook_plan",
+      "request_id": "req_plan_rate_01",
+      "input": {
+        "goal": "能用两个时刻的位置解释平均速度，并对给定位置函数求瞬时速度、解释差商的条件和结果单位。",
+        "intent": "full",
+        "scope": {"kind": "all", "section_ids": ["rate_interval", "rate_units", "rate_limit", "rate_nonzero"]},
+        "sections": [
+          {"section_id": "rate_interval", "title": "两点间的平均速度", "source_ref": {"kind": "source", "id": "src_rate_book", "revision": 1, "locator": {"section": "两点间的平均速度"}}, "text_md": "a 到 b 的平均速度等于 (s(b)-s(a))/(b-a)，要求 a≠b。这个量是位置图上两点构成的割线斜率。s(t)=t² 在 2 到 3 的平均速度是 5 m/s。"},
+          {"section_id": "rate_units", "title": "速度单位与方向", "source_ref": {"kind": "source", "id": "src_rate_book", "revision": 1, "locator": {"section": "速度单位与方向"}}, "text_md": "位置以米、时间以秒记录，因此变化率的单位是 m/s。速度的正负号表示位置增减的方向，速度大小取绝对值。"},
+          {"section_id": "rate_limit", "title": "瞬时速度与极限", "source_ref": {"kind": "source", "id": "src_rate_book", "revision": 1, "locator": {"section": "瞬时速度与极限"}}, "text_md": "求 t=2 的瞬时速度时，先按 h≠0 写平均速度 (s(2+h)-s(2))/h。对 s(t)=t²，展开约去 h 得 4+h，h 趋近 0 时速度为 4 m/s。"},
+          {"section_id": "rate_nonzero", "title": "为什么先约去再取极限", "source_ref": {"kind": "source", "id": "src_rate_book", "revision": 1, "locator": {"section": "为什么先约去再取极限"}}, "text_md": "差商在 h=0 未定义。先在非零值上化简，极限计算 h 靠近 0 的趋势。固定的非零 h 对应区间平均速度。"}
+        ],
+        "assessment_refs": [],
+        "existing_nodes": [],
+        "source_catalog": [{"id": "src_rate_book", "revision": 1, "media_type": "text/markdown", "title": "从两个时刻的平均速度到瞬时速度", "example_file": "agentarts/fixtures/rate-mini-textbook.md"}]
+      }
+    },
+    "expected": {
+      "schema_version": "1.0",
+      "workflow": "textbook_plan",
+      "request_id": "req_plan_rate_01",
+      "outcome": "ok",
+      "result": {
+        "nodes": [
+          {
+            "temp_id": "rate_average", "kind": "mainline", "title": "从两次记录读出平均速度",
+            "objectives": [{"id": "obj_avg", "text": "给定两个不同时刻的位置，求平均速度并解释单位和方向。"}],
+            "reading": {
+              "intro_md": "用位置的差和时间的差读出一段运动的平均速度。",
+              "steps": ["在位置图上标出两次记录，计算割线斜率。", "用米与秒说明答案单位，并解释正负号。"],
+              "key_points": ["时刻必须不同。", "速度方向可从变化率符号读出。"],
+              "source_refs": [{"kind": "source", "id": "src_rate_book", "revision": 1, "locator": {"section": "两点间的平均速度"}}, {"kind": "source", "id": "src_rate_book", "revision": 1, "locator": {"section": "速度单位与方向"}}]
+            },
+            "activities": [{"id": "act_avg", "kind": "checkpoint", "objective_ids": ["obj_avg"], "prompt_md": "物体在 t=1 s 时位于 7 m，在 t=3 s 时位于 3 m，求平均速度并解释方向。", "solution_md": "(3-7)/(3-1)=-2 m/s。负号表示位置随这段平均变化减小。", "source_refs": [{"kind": "source", "id": "src_rate_book", "revision": 1, "locator": {"section": "两点间的平均速度"}}, {"kind": "source", "id": "src_rate_book", "revision": 1, "locator": {"section": "速度单位与方向"}}]}],
+            "source_refs": [{"kind": "source", "id": "src_rate_book", "revision": 1, "locator": {"section": "两点间的平均速度"}}, {"kind": "source", "id": "src_rate_book", "revision": 1, "locator": {"section": "速度单位与方向"}}]
+          },
+          {
+            "temp_id": "rate_instant", "kind": "mainline", "title": "从一个区间缩到一个时刻",
+            "objectives": [{"id": "obj_instant", "text": "为给定位置函数构造平均速度差商，在 h≠0 时化简，再用极限计算瞬时速度和单位。"}],
+            "reading": {
+              "intro_md": "用上一章的平均速度观察时差逐渐缩小会发生什么。",
+              "steps": ["先从平均速度公式写差商，保留 h≠0。", "展开、约去 h，再让时差趋近 0。"],
+              "key_points": ["先化简差商再取极限。", "位置与时间单位决定速度单位。"],
+              "source_refs": [{"kind": "source", "id": "src_rate_book", "revision": 1, "locator": {"section": "两点间的平均速度"}}, {"kind": "source", "id": "src_rate_book", "revision": 1, "locator": {"section": "速度单位与方向"}}, {"kind": "source", "id": "src_rate_book", "revision": 1, "locator": {"section": "瞬时速度与极限"}}, {"kind": "source", "id": "src_rate_book", "revision": 1, "locator": {"section": "为什么先约去再取极限"}}]
+            },
+            "activities": [{"id": "act_limit", "kind": "checkpoint", "objective_ids": ["obj_instant"], "prompt_md": "若 s(t)=t²，求 t=3 s 的瞬时速度。写出差商的条件，说明为何不能直接取 h=0。", "solution_md": "h≠0 时 ((3+h)²-9)/h=6+h。令 h 趋近 0 得 6 m/s，原差商在 h=0 无定义。", "acceptable_variants": ["保留 h≠0，按左右两侧趋近说明趋势均为 6 m/s。"], "source_refs": [{"kind": "source", "id": "src_rate_book", "revision": 1, "locator": {"section": "瞬时速度与极限"}}, {"kind": "source", "id": "src_rate_book", "revision": 1, "locator": {"section": "为什么先约去再取极限"}}]}],
+            "source_refs": [{"kind": "source", "id": "src_rate_book", "revision": 1, "locator": {"section": "两点间的平均速度"}}, {"kind": "source", "id": "src_rate_book", "revision": 1, "locator": {"section": "瞬时速度与极限"}}, {"kind": "source", "id": "src_rate_book", "revision": 1, "locator": {"section": "为什么先约去再取极限"}}]
+          }
+        ],
+        "routes": [
+          {"kind": "full", "title": "平均速度到瞬时速度", "node_ids": ["rate_average", "rate_instant"], "counted_node_ids": ["rate_average", "rate_instant"], "edges": [{"kind": "prerequisite", "from_node_id": "rate_average", "to_node_id": "rate_instant", "target_objective_id": "obj_instant", "reason_md": "构造差商要用两点间平均速度的公式和时间差不为零的条件。"}]},
+          {"kind": "core", "title": "变化率核心", "node_ids": ["rate_average", "rate_instant"], "counted_node_ids": ["rate_average", "rate_instant"], "edges": [{"kind": "prerequisite", "from_node_id": "rate_average", "to_node_id": "rate_instant", "target_objective_id": "obj_instant", "reason_md": "用平均速度构造后继目标的差商。"}]}
+        ],
+        "coverage": [
+          {"section_id": "rate_interval", "node_ids": ["rate_average", "rate_instant"], "disposition": "taught", "source_refs": [{"kind": "source", "id": "src_rate_book", "revision": 1, "locator": {"section": "两点间的平均速度"}}]},
+          {"section_id": "rate_units", "node_ids": ["rate_average", "rate_instant"], "disposition": "taught", "source_refs": [{"kind": "source", "id": "src_rate_book", "revision": 1, "locator": {"section": "速度单位与方向"}}]},
+          {"section_id": "rate_limit", "node_ids": ["rate_instant"], "disposition": "taught", "source_refs": [{"kind": "source", "id": "src_rate_book", "revision": 1, "locator": {"section": "瞬时速度与极限"}}]},
+          {"section_id": "rate_nonzero", "node_ids": ["rate_instant"], "disposition": "taught", "source_refs": [{"kind": "source", "id": "src_rate_book", "revision": 1, "locator": {"section": "为什么先约去再取极限"}}]}
+        ],
+        "practice_alignment": [
+          {"node_id": "rate_average", "activity_id": "act_avg", "objective_ids": ["obj_avg"], "check": "题面要求从两次记录计算速度并解释方向。"},
+          {"node_id": "rate_instant", "activity_id": "act_limit", "objective_ids": ["obj_instant"], "check": "题面换用 t=3，要求独立构造差商并说明适用条件。"}
+        ],
+        "reuse": [],
+        "verification": {"coverage": "pass", "prerequisites": "pass", "activities": "pass", "issues": []}
+      },
+      "issues": []
+    }
+  }
+}
