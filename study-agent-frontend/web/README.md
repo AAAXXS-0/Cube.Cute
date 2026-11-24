@@ -55,4 +55,4 @@ VITE_API_BASE_URL=http://localhost:3000/api/v1
 
 ## Git
 
-当前功能分支：`frontend/v0.1.0-focus-workspace`。版本标签：`frontend-v0.1.0`。未经明确要求不推送远程，不推送 `main`。
+前端集成分支：`frontend`。当前功能分支：`frontend-v0.1.0-focus-workspace`。版本标签：`frontend-v0.1.0`。功能分支通过 PR 合入 `frontend`，未经明确要求不推送远程，不推送 `main`。
