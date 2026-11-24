@@ -15,6 +15,18 @@
 
 > 读 AGENTS.md、共同起步、共用开发契约、前端任务书及 examples.json。按前端任务书从 F1 开始实际开发，先用样例完成可点击的 A → S → A 和浏览 B 的场景，覆盖任务书的接口状态及验收步骤。按现有项目结构提交工作，并说明 mock 与真实 API 的切换方法。
 
+## 当前可运行版本
+
+`web/` 包含前端 v0.1.0 的 A/B/S 学习工作台。Node.js 24 下运行：
+
+```bash
+cd web
+npm install
+npm run dev
+```
+
+打开 `http://localhost:5173/workspace/g_network`。默认使用 localStorage mock，HTTP 切换方式、演示步骤和测试命令见 [web/README](web/README.md)；本次实测记录见 [验收记录](web/ACCEPTANCE.md)。
+
 ## 设计和样例
 
 [产品功能大纲](docs/product-outline.md) · [设计稿索引](docs/design-index.md) · [自编短教材](docs/development/fixtures/network-mini-textbook.md)
